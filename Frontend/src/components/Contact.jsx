@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -8,6 +9,132 @@ import {
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const Contact = () => {
+  // Form state
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  // Status message
+  const [status, setStatus] = useState({
+    type: "",
+    message: "",
+  });
+
+  // Loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Submit form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setStatus({
+      type: "",
+      message: "",
+    });
+
+    // Validation
+    if (!form.name.trim()) {
+      setStatus({
+        type: "error",
+        message: "Please enter your name.",
+      });
+      return;
+    }
+
+    if (!form.email.trim()) {
+      setStatus({
+        type: "error",
+        message: "Please enter your email.",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(form.email.trim())) {
+      setStatus({
+        type: "error",
+        message: "Please enter a valid email address.",
+      });
+      return;
+    }
+
+    if (!form.message.trim()) {
+      setStatus({
+        type: "error",
+        message: "Please enter a message.",
+      });
+      return;
+    }
+
+    if (form.message.trim().length < 10) {
+      setStatus({
+        type: "error",
+        message: "Message must contain at least 10 characters.",
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          message: form.message.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Unable to send message."
+        );
+      }
+
+      setStatus({
+        type: "success",
+        message: "Message sent successfully!",
+      });
+
+      // Clear form
+      setForm({
+        name: "",
+        email: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Contact form error:", error);
+
+      setStatus({
+        type: "error",
+        message:
+          error.message ||
+          "Something went wrong. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section
       id="contact"
@@ -59,7 +186,7 @@ const Contact = () => {
 
             {/* Email */}
             <a
-              href="mailto:your-email@example.com"
+              href="mailto:jagadishchandra998@gmail.com"
               className="group flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.025] p-6 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-cyan-400/30"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-cyan-400/20 bg-cyan-400/5 text-cyan-400">
@@ -72,7 +199,7 @@ const Contact = () => {
                 </p>
 
                 <p className="mt-1 text-sm text-gray-300 group-hover:text-cyan-400">
-                 jagadishchandra998@gmail.com
+                  jagadishchandra998@gmail.com
                 </p>
               </div>
 
@@ -169,7 +296,11 @@ const Contact = () => {
 
             </div>
 
-            <form className="space-y-5">
+            {/* Form */}
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5"
+            >
 
               {/* Name */}
               <div>
@@ -179,7 +310,12 @@ const Contact = () => {
 
                 <input
                   type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
                   placeholder="Enter your name"
+                  maxLength={100}
+                  autoComplete="name"
                   className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-700 focus:border-cyan-400/50"
                 />
               </div>
@@ -192,7 +328,12 @@ const Contact = () => {
 
                 <input
                   type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
                   placeholder="you@example.com"
+                  maxLength={150}
+                  autoComplete="email"
                   className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-700 focus:border-cyan-400/50"
                 />
               </div>
@@ -204,26 +345,47 @@ const Contact = () => {
                 </label>
 
                 <textarea
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
                   rows="5"
+                  maxLength={2000}
                   placeholder="Tell me about your project..."
                   className="w-full resize-none rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-700 focus:border-cyan-400/50"
                 />
               </div>
 
-              {/* Button */}
+              {/* Status message */}
+              {status.message && (
+                <div
+                  className={`rounded-xl border px-4 py-3 text-sm ${
+                    status.type === "success"
+                      ? "border-green-400/20 bg-green-400/5 text-green-400"
+                      : "border-red-400/20 bg-red-400/5 text-red-400"
+                  }`}
+                >
+                  {status.message}
+                </div>
+              )}
+
+              {/* Submit button */}
               <button
                 type="submit"
-                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-3.5 font-semibold text-black transition hover:bg-cyan-300"
+                disabled={isSubmitting}
+                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-400 px-6 py-3.5 font-semibold text-black transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
 
-                <Send
-                  size={17}
-                  className="transition group-hover:translate-x-1"
-                />
+                {!isSubmitting && (
+                  <Send
+                    size={17}
+                    className="transition group-hover:translate-x-1"
+                  />
+                )}
               </button>
 
             </form>
+
           </motion.div>
         </div>
 
