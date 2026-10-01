@@ -90,23 +90,48 @@ const Contact = () => {
     try {
       setIsSubmitting(true);
 
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          message: form.message.trim(),
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/contact`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: form.name.trim(),
+            email: form.email.trim(),
+            message: form.message.trim(),
+          }),
+        });
 
-      const data = await response.json();
+      // const data = await response.json();
+
+      // if (!response.ok) {
+      //   throw new Error(
+      //     data.message || "Unable to send message."
+      //   );
+      // }
+
+      const responseText = await response.text();
+
+      console.log("STATUS:", response.status);
+      console.log("URL:", response.url);
+      console.log("CONTENT TYPE:", response.headers.get("content-type"));
+      console.log("RESPONSE:", responseText);
+
+      let data = {};
+
+      try {
+        data = responseText ? JSON.parse(responseText) : {};
+      } catch (parseError) {
+        console.error("JSON parse error:", parseError);
+      }
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Unable to send message."
+          data.message ||
+          responseText ||
+          `Request failed with status ${response.status}`
         );
       }
 
@@ -358,11 +383,10 @@ const Contact = () => {
               {/* Status message */}
               {status.message && (
                 <div
-                  className={`rounded-xl border px-4 py-3 text-sm ${
-                    status.type === "success"
-                      ? "border-green-400/20 bg-green-400/5 text-green-400"
-                      : "border-red-400/20 bg-red-400/5 text-red-400"
-                  }`}
+                  className={`rounded-xl border px-4 py-3 text-sm ${status.type === "success"
+                    ? "border-green-400/20 bg-green-400/5 text-green-400"
+                    : "border-red-400/20 bg-red-400/5 text-red-400"
+                    }`}
                 >
                   {status.message}
                 </div>
