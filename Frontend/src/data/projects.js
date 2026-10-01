@@ -26,11 +26,14 @@ export const projects = [
     description:
       "A smart energy monitoring and priority-based load scheduling system for managing appliances, monitoring energy usage, scheduling devices, and estimating electricity bills.",
     technologies: [
-      "React",
+      "React.js",
       "Node.js",
       "Express",
       "MongoDB",
       "JWT",
+      "Nodemon",
+      "dotenv",
+      "Axios"
     ],
     featured: true,
     github: "https://github.com/JagadishChandra998/Smart-Home-Energy-Monitor",
@@ -41,13 +44,14 @@ export const projects = [
     id: 3,
     title: "Retail Sales & Inventory Analytics",
     category: "Full Stack",
-    description:
-      "A MERN-based store management system for products, categories, billing, inventory monitoring, user roles, sales tracking, and dashboard analytics.",
+    description:"A MERN-based retail analytics system that manages sales and inventory while transforming business data into KPIs, reports, trends, and actionable insights.",
     technologies: [
       "React",
       "Node.js",
       "Express",
       "MongoDB",
+      "MongoDB Aggregation",
+      "Power BI",
     ],
     featured: true,
     github: "https://github.com/JagadishChandra998/store-inventory-billing-desk",
@@ -117,10 +121,12 @@ export const experiences = [
         description:
             "Successfully completed 30 days of vocational training on Smart Energy Monitoring in the Directorate of Central Data Processing at Integrated Test Range, DRDO.",
         technologies: [
-            "Smart Energy Monitoring",
+            "Priority-Based Load Management",
             "Data Processing",
             "Energy Monitoring",
-            "Computer Science",
+            "Automatic Scheduling",
+            "Authentication",
+            "Database",
         ],
         certificate: "/certificates/DRDO.jpeg",
 
