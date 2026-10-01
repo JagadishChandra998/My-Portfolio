@@ -104,20 +104,13 @@ const Contact = () => {
           }),
         });
 
-      // const data = await response.json();
-
-      // if (!response.ok) {
-      //   throw new Error(
-      //     data.message || "Unable to send message."
-      //   );
-      // }
 
       const responseText = await response.text();
 
-      console.log("STATUS:", response.status);
-      console.log("URL:", response.url);
-      console.log("CONTENT TYPE:", response.headers.get("content-type"));
-      console.log("RESPONSE:", responseText);
+      // console.log("STATUS:", response.status);
+      // console.log("URL:", response.url);
+      // console.log("CONTENT TYPE:", response.headers.get("content-type"));
+      // console.log("RESPONSE:", responseText);
 
       let data = {};
 
