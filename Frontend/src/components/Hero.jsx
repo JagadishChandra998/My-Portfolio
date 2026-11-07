@@ -174,8 +174,8 @@ const Hero = () => {
                         </a>
 
                         <a
-                            href="/resume.pdf"
-                            download
+                            href="/certificates/Resume.pdf"
+                            download="Jagadish_Chandra_Dhal_Resume.pdf"
                             className="group flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-6 py-3.5 font-semibold text-white backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-cyan-400/5 hover:text-cyan-400"
                         >
                             <Download
